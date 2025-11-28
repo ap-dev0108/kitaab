@@ -1,5 +1,8 @@
 using kitaab.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using kitaab.Model;
 
 var builder = WebApplication.CreateBuilder(args); //setups kestrel server
 
@@ -8,13 +11,22 @@ var builder = WebApplication.CreateBuilder(args); //setups kestrel server
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 
 //Connection String.
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+    {
+        options.Password.RequiredLength = 8;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireUppercase = true;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -27,4 +39,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.MapControllers();
 app.Run();
