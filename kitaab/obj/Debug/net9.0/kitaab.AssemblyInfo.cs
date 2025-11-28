@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("kitaab")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+984eb2784ab4c8d0e97f62dc733a8680edae90c2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49749f67d03df22bbd2c1ac90a04792056117dc1")]
 [assembly: System.Reflection.AssemblyProductAttribute("kitaab")]
 [assembly: System.Reflection.AssemblyTitleAttribute("kitaab")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
