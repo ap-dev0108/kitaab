@@ -28,7 +28,21 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
+
+//Seeding the roles here
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+    await DataSeeder.SeedAdmin(userManager);
+    await DataSeeder.SeedRoles(roleManager);
+
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

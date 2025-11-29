@@ -1,4 +1,5 @@
 using kitaab.Database;
+using kitaab.DTO;
 using Microsoft.AspNetCore.Mvc;
 using kitaab.Model;
 using Microsoft.AspNetCore.Identity;
@@ -31,5 +32,43 @@ public class UserController : ControllerBase
             return NotFound("No users found");
         
         return Ok(new {Message= "Users fetched", users= getUsers});
+    }
+
+    [HttpPost("/register")]
+    public async Task<ActionResult<RegisterDTO>> Register(RegisterDTO registerRequest)
+    {
+        var userExists = await _userManager.FindByEmailAsync(registerRequest.userEmail);
+        if (userExists != null)
+            return Conflict("There is a user with ths mail already");
+
+        var newUser = new User
+        {
+            Email = registerRequest.userEmail,
+            PasswordHash = registerRequest.userPassword,
+            UserName = registerRequest.FullName,
+            fullName = registerRequest.FullName,
+            createDate = DateTime.UtcNow,
+            EmailConfirmed = false,
+            isActive = true,
+        };
+
+        var creatingUser = await _userManager.CreateAsync(newUser, registerRequest.userPassword);
+        if (!creatingUser.Succeeded)
+            return BadRequest(creatingUser.Errors.First().Description);
+        
+        await _userManager.AddToRoleAsync(newUser, "User");
+
+        var responseDTO = new RegisterDTO
+        {
+            FullName = registerRequest.FullName,
+            userEmail =  registerRequest.userEmail,
+            userPassword =  registerRequest.userPassword,
+        };
+
+        return Ok( new
+        {
+            Message = "User created",
+            details = responseDTO
+        });
     }
 }
